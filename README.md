@@ -132,6 +132,63 @@ var returnValue = doc.Descendants("data").Last().Value;
 Console.WriteLine($"cos(0) = {returnValue}");  // 1
 ```
 
+### Service Program Function Call (SSH transport)
+
+This example calls a custom service program `MYLIB/MATHSRV` that exposes an
+`ADD` function accepting two 4-byte integers and returning their sum.
+
+```csharp
+using IToolkit;
+using IToolkit.Transports;
+using System.Xml.Linq;
+
+var conn = new Connection(new ConnectionOptions
+{
+    Transport = "ssh",
+    TransportOptions = new TransportOptions
+    {
+        Host     = "myibmi",
+        Username = "myuser",
+        Password = "mypassword"
+    }
+});
+
+// Call ADD(*int 4, *int 4) returns *int 4  from MYLIB/MATHSRV
+var program = new ProgramCall("MATHSRV", new ProgramCallOptions
+{
+    Lib  = "MYLIB",
+    Func = "ADD"
+});
+
+// Input parameters (passed by reference by default)
+program.AddParam(new ParameterConfig { Type = "4i0", Value = "10" });
+program.AddParam(new ParameterConfig { Type = "4i0", Value = "32" });
+
+// Return value
+program.AddReturn(new ParameterConfig { Type = "4i0", Value = "" });
+
+conn.Add(program);
+
+string xmlOutput = await conn.RunAsync();
+
+// Parse the result — the return value is the last <data> element
+var doc = XDocument.Parse(xmlOutput);
+string result = doc.Descendants("data").Last().Value;
+Console.WriteLine($"ADD(10, 32) = {result}");  // 42
+```
+
+**Common XMLSERVICE data types:**
+
+| Type    | RPG equivalent | Description              |
+|---------|----------------|--------------------------|
+| `4i0`   | `10I 0`        | 4-byte signed integer    |
+| `8i0`   | `20I 0`        | 8-byte signed integer    |
+| `4u0`   | `10U 0`        | 4-byte unsigned integer  |
+| `8f`    | `8F`           | 8-byte float (double)    |
+| `32a`   | `32A`          | 32-char fixed string     |
+| `varying2` | `varchar`   | Variable-length string   |
+| `ds`    | `DS`           | Data structure           |
+
 ### ODBC Transport
 
 ```csharp
