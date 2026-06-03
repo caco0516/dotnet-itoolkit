@@ -34,8 +34,8 @@ namespace IToolkit.Transports
             var parameters = new Dictionary<string, string>
             {
                 ["db2"]    = options.Database,
-                ["uid"]    = options.Username,
-                ["pwd"]    = options.Password,
+                ["uid"]    = options.Username!,
+                ["pwd"]    = options.Password!,
                 ["ipc"]    = options.Ipc,
                 ["ctl"]    = options.Ctl,
                 ["xmlin"]  = xmlInput,

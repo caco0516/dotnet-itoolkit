@@ -71,8 +71,8 @@ namespace IToolkit.Transports
             if (!string.IsNullOrEmpty(options.PrivateKey))
             {
                 var keyFile = string.IsNullOrEmpty(options.Passphrase)
-                    ? new PrivateKeyFile(options.PrivateKey)
-                    : new PrivateKeyFile(options.PrivateKey, options.Passphrase);
+                    ? new PrivateKeyFile(options.PrivateKey!)
+                    : new PrivateKeyFile(options.PrivateKey!, options.Passphrase);
 
                 methods.Add(new PrivateKeyAuthenticationMethod(options.Username!, keyFile));
             }
