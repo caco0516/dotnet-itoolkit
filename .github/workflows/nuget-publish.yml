@@ -1,0 +1,88 @@
+name: Publish NuGet
+
+# Triggered when a tag matching `net-v*.*.*` is pushed.
+# Examples: net-v1.0.0   net-v1.2.3-beta.1
+#
+# Required repository secrets:
+#   NUGET_API_KEY  — NuGet.org API key (https://www.nuget.org/account/apikeys)
+#                    Scope: Push new packages and package versions.
+#   GH_TOKEN       — GitHub token for creating the release (default GITHUB_TOKEN
+#                    usually works; create a PAT only if needed).
+on:
+  push:
+    tags:
+      - 'net-v*.*.*'
+
+jobs:
+  publish:
+    runs-on: windows-latest   # needed for net48 TFM
+
+    permissions:
+      contents: write         # allows creating a GitHub release
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      # full history required for SourceLink
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      # ── Extract version from the tag (strips the leading "net-v") ────────
+      - name: Derive package version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"            # e.g. net-v1.2.3-beta.1
+          VERSION="${TAG#net-v}"              # e.g. 1.2.3-beta.1
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore
+        run: dotnet restore
+
+      # ── Build & test both TFMs before publishing ──────────────────────────
+      - name: Build
+        run: >
+          dotnet build
+          --no-restore
+          --configuration Release
+          -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Test
+        run: >
+          dotnet test
+          --no-build
+          --configuration Release
+          --verbosity normal
+
+      # ── Create .nupkg + .snupkg ───────────────────────────────────────────
+      - name: Pack
+        run: >
+          dotnet pack src/IToolkit/IToolkit.csproj
+          --no-build
+          --configuration Release
+          --output ./artifacts
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:IncludeSymbols=true
+          -p:SymbolPackageFormat=snupkg
+
+      # ── Push to NuGet.org ─────────────────────────────────────────────────
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push "./artifacts/*.nupkg"
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      # ── Create GitHub release ─────────────────────────────────────────────
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ".NET IToolkit v${{ steps.version.outputs.version }}"
+          generate_release_notes: true
+          files: artifacts/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}

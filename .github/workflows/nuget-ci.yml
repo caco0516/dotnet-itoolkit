@@ -1,0 +1,63 @@
+name: .NET CI
+
+# Runs on every push / PR that touches the net/ folder.
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/nuget-ci.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/nuget-ci.yml'
+
+jobs:
+  build-and-test:
+    # Windows runner is required to build and test the net48 TFM.
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history is required for SourceLink to embed correct commit SHA.
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # Installs the latest .NET 10 SDK; the net48 TFM uses the pre-installed
+          # .NET Framework on the Windows runner.
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build (Release)
+        run: dotnet build --no-restore --configuration Release
+
+      # Run unit tests for all target frameworks.
+      # net48 runs via .NET Framework on the Windows runner.
+      # net10.0 runs via the .NET 10 SDK installed above.
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      # Verify the package can be created without errors (but don't publish it).
+      - name: Pack (dry-run)
+        run: >
+          dotnet pack src/IToolkit/IToolkit.csproj
+          --no-build
+          --configuration Release
+          --output ./artifacts
+          -p:IncludeSymbols=true
+          -p:SymbolPackageFormat=snupkg
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/*.nupkg
+          retention-days: 7

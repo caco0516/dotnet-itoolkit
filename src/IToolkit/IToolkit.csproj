@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- ── Compilation ──────────────────────────────────────────────────────── -->
+  <PropertyGroup>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>IToolkit</AssemblyName>
+    <RootNamespace>IToolkit</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- ── NuGet package metadata ───────────────────────────────────────────── -->
+  <PropertyGroup>
+    <PackageId>IToolkit.IBMi</PackageId>
+    <Title>IToolkit for IBM i</Title>
+    <Description>
+      .NET port of the Node.js itoolkit library.
+      XMLSERVICE wrapper to call IBM i programs, service programs, and CL/QSH/SH commands.
+      Supports REST (HTTP/CGI), SSH, and ODBC transports.
+      Compatible with .NET Framework 4.8 and .NET 10+.
+    </Description>
+    <Authors>caco0516</Authors>
+    <Copyright>Copyright © 2026 caco0516. Based on the Node.js itoolkit by IBM (https://github.com/IBM/nodejs-itoolkit)</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/IBM/nodejs-itoolkit</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>ibmi;xmlservice;rpg;srvpgm;as400;iseries</PackageTags>
+    <PackageReleaseNotes>https://github.com/IBM/nodejs-itoolkit/blob/master/CHANGELOG.md</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <!-- ── Reproducible / SourceLink build ─────────────────────────────────── -->
+  <PropertyGroup>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Symbols package (.snupkg) uploaded alongside .nupkg -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Deterministic and ContinuousIntegrationBuild are set in Directory.Build.props -->
+  </PropertyGroup>
+
+  <!-- ── Files packed into the .nupkg ────────────────────────────────────── -->
+  <ItemGroup>
+    <!-- Include the net/README.md as the NuGet package readme -->
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <!-- Include root LICENSE file -->
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- ── Runtime dependencies ─────────────────────────────────────────────── -->
+
+  <!-- SourceLink: embeds GitHub source URLs in the PDB -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- SSH transport (supports net462 and net6.0+) -->
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2024.2.0" />
+  </ItemGroup>
+
+  <!-- ODBC: built into System.Data on net48; needs NuGet on net10+ -->
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

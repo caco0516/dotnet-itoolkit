@@ -1,0 +1,27 @@
+<!--
+  Directory.Build.props — applies to ALL projects under net/
+  Centralises version, repository metadata, and CI settings so they
+  only need to be changed in one place.
+-->
+<Project>
+  <PropertyGroup>
+    <!-- ── Version ──────────────────────────────────────────────────────────
+         Bump Version before tagging a release.
+         VersionSuffix can be set on the command line for pre-release builds:
+           dotnet pack -p:VersionSuffix=beta.1
+    ─────────────────────────────────────────────────────────────────────── -->
+    <Version>1.0.0</Version>
+    <VersionSuffix></VersionSuffix>
+
+    <!-- ── Repository ───────────────────────────────────────────────────── -->
+    <RepositoryUrl>https://github.com/IBM/nodejs-itoolkit</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- ── Deterministic / Reproducible builds ──────────────────────────── -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- ── Warnings as errors in CI ─────────────────────────────────────── -->
+    <TreatWarningsAsErrors Condition="'$(CI)' == 'true'">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>
