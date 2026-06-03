@@ -21,12 +21,12 @@
       Compatible with .NET Framework 4.8 and .NET 10+.
     </Description>
     <Authors>caco0516</Authors>
-    <Copyright>Copyright © 2026 caco0516. Based on the Node.js itoolkit by IBM (https://github.com/IBM/nodejs-itoolkit)</Copyright>
+    <Copyright>Copyright © 2026 caco0516. Inspired by the Node.js itoolkit by IBM (https://github.com/IBM/nodejs-itoolkit)</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/IBM/nodejs-itoolkit</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/caco0516/dotnet-itoolkit</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>ibmi;xmlservice;rpg;srvpgm;as400;iseries</PackageTags>
-    <PackageReleaseNotes>https://github.com/IBM/nodejs-itoolkit/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/caco0516/dotnet-itoolkit/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- ── Reproducible / SourceLink build ─────────────────────────────────── -->

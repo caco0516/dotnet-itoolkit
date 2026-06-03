@@ -14,7 +14,7 @@
     <VersionSuffix></VersionSuffix>
 
     <!-- ── Repository ───────────────────────────────────────────────────── -->
-    <RepositoryUrl>https://github.com/IBM/nodejs-itoolkit</RepositoryUrl>
+    <RepositoryUrl>https://github.com/caco0516/dotnet-itoolkit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
     <!-- ── Deterministic / Reproducible builds ──────────────────────────── -->

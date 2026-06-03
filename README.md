@@ -229,4 +229,4 @@ new ProgramCall(string program, ProgramCallOptions?)
 
 MIT — see [LICENSE](LICENSE).
 
-> Based on the [Node.js itoolkit](https://github.com/IBM/nodejs-itoolkit) project by IBM.
+> Inspired by the [Node.js itoolkit](https://github.com/IBM/nodejs-itoolkit) project by IBM.

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 caco0516
-// Based on the Node.js itoolkit project by IBM (https://github.com/IBM/nodejs-itoolkit)
+// Inspired by the Node.js itoolkit project by IBM (https://github.com/IBM/nodejs-itoolkit)
 // SPDX-License-Identifier: MIT
 
 namespace IToolkit.Transports
