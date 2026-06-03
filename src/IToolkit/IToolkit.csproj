@@ -64,4 +64,9 @@
     <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- net48: System.Net.Http is a framework assembly that must be referenced explicitly -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
 </Project>
