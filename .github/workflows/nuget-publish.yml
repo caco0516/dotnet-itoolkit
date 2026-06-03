@@ -69,7 +69,11 @@ jobs:
           -p:SymbolPackageFormat=snupkg
 
       # ── Push to NuGet.org ─────────────────────────────────────────────────
+      # Use bash so the glob ./artifacts/*.nupkg is shell-expanded.
+      # pwsh (the default on Windows runners) passes globs as literal strings
+      # to external processes, causing "File does not exist" errors.
       - name: Push to NuGet.org
+        shell: bash
         run: >
           dotnet nuget push "./artifacts/*.nupkg"
           --api-key ${{ secrets.NUGET_API_KEY }}
