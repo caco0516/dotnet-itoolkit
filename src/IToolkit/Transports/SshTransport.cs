@@ -41,12 +41,11 @@ namespace IToolkit.Transports
 
             using var command = client.CreateCommand("/QOpenSys/pkgs/bin/xmlservice-cli");
 
-            // SSH.NET 2024.x: CreateInputStream() must be called BEFORE BeginExecute.
-            // It returns a pipe whose write-end is connected to the remote process stdin.
-            using var stdinStream = command.CreateInputStream();
-
+            // SSH.NET 2024.x: BeginExecute() must be called BEFORE CreateInputStream().
+            // The stream is only valid between BeginExecute and EndExecute.
             var asyncResult = command.BeginExecute();
 
+            using var stdinStream = command.CreateInputStream();
             var inputBytes = Encoding.UTF8.GetBytes(xmlInput);
             stdinStream.Write(inputBytes, 0, inputBytes.Length);
             stdinStream.Flush();
