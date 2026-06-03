@@ -3,7 +3,7 @@ name: .NET CI
 # Runs on every push / PR that touches the net/ folder.
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'src/**'
       - 'tests/**'
